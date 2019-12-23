@@ -34,7 +34,7 @@ func (ae *AppEngineAdminService) VersionList(ctx context.Context, projectID, ser
 
 func (ae *AppEngineAdminService) DeleteVersion(ctx context.Context, projectID, serviceID, versionName string) error {
 	if _, err := ae.srv.Apps.Services.Versions.Delete(projectID, serviceID, versionName).Context(ctx).Do(); err != nil {
-		log.Printf("[ERROR] app engine admin api versions delete error(service=%s, version=%s): %v", serviceID, versionName, err)
+		log.Printf("[ERROR] app engine admin api versions delete error(project=%s, service=%s, version=%s): %v", projectID, serviceID, versionName, err)
 		return err
 	}
 	return nil
