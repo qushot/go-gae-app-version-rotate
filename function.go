@@ -45,14 +45,17 @@ func GAEAppVersionRotate(ctx context.Context, m PubSubMessage) error {
 
 	sort.Strings(createTimes)
 
-	for i, createTime := range createTimes {
-		if len(createTimes) <= i+body.KeepVersionCount {
+	deletedCount := 0
+	for _, createTime := range createTimes {
+		if len(versions) <= deletedCount+body.KeepVersionCount {
 			break
 		}
 
-		if err := aeAdminService.DeleteVersion(ctx, body.ProjectID, body.ServiceName, createTimeVersionMap[createTime]); err != nil {
-			return err
+		versionName := createTimeVersionMap[createTime]
+		if err := aeAdminService.DeleteVersion(ctx, body.ProjectID, body.ServiceName, versionName); err != nil {
+			continue
 		}
+		deletedCount++
 	}
 
 	return nil
